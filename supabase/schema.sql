@@ -86,6 +86,91 @@ create policy "Только правление удаляет заявки"
 
 
 -- ============================================
+-- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ: проверка членства в правлении
+-- security definer — выполняется без RLS, чтобы избежать рекурсии
+-- ============================================
+create or replace function public.is_board_member()
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.residents
+    where user_id = auth.uid() and is_board = true
+  );
+$$;
+
+
+-- ============================================
+-- ТАБЛИЦА: ЖИЛЬЦЫ
+-- Заполняется правлением через Supabase Dashboard:
+--   Auth → Users → Invite user (задать email + пароль)
+--   Table Editor → residents → Insert row (user_id, apartment, name)
+-- ============================================
+create table if not exists public.residents (
+  id         bigserial primary key,
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  apartment  text not null,
+  name       text not null,
+  is_board   boolean not null default false,
+  created_at timestamptz not null default now(),
+  unique(user_id)
+);
+
+create index if not exists residents_user_id_idx
+  on public.residents (user_id);
+
+alter table public.residents enable row level security;
+
+-- Жилец видит только свой профиль
+create policy "Жилец видит свой профиль"
+  on public.residents for select
+  using (auth.uid() = user_id);
+
+-- Правление видит все профили (через security definer функцию — без рекурсии)
+create policy "Правление видит все профили"
+  on public.residents for select
+  using (public.is_board_member());
+
+-- Правление управляет жильцами
+create policy "Правление управляет жильцами"
+  on public.residents for insert
+  with check (public.is_board_member());
+
+create policy "Правление обновляет жильцов"
+  on public.residents for update
+  using (public.is_board_member());
+
+create policy "Правление удаляет жильцов"
+  on public.residents for delete
+  using (public.is_board_member());
+
+
+-- ============================================
+-- ОБНОВЛЕНИЕ ПОЛИТИК ДЛЯ ЗАЯВОК
+-- Если таблица уже создана — выполните сначала:
+--   drop policy "Только правление видит заявки" on public.requests;
+-- ============================================
+
+-- Жильцы видят только заявки своей квартиры
+create policy "Жильцы видят свои заявки"
+  on public.requests for select
+  using (
+    apartment = (
+      select apartment from public.residents
+      where user_id = auth.uid()
+    )
+  );
+
+-- Правление видит все заявки
+create policy "Правление видит все заявки"
+  on public.requests for select
+  using (public.is_board_member());
+
+
+-- ============================================
 -- ПРИМЕРНЫЕ ДАННЫЕ ДЛЯ НАЧАЛА
 -- ============================================
 insert into public.news (title, category, excerpt, published_at) values
