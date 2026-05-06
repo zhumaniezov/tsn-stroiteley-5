@@ -1118,3 +1118,12 @@ footer {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Honeypot: скрыто от людей, видно ботам */
+.form-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

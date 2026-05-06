@@ -30,10 +30,17 @@ create policy "Новости доступны всем для чтения"
   on public.news for select
   using (true);
 
--- Политика: только авторизованные пользователи могут добавлять/менять
--- (правление будет редактировать через Supabase Dashboard)
+-- Политика: только авторизованные могут добавлять/изменять/удалять
+create policy "Только авторизованные могут добавлять новости"
+  on public.news for insert
+  with check (auth.role() = 'authenticated');
+
 create policy "Только авторизованные могут изменять новости"
-  on public.news for all
+  on public.news for update
+  using (auth.role() = 'authenticated');
+
+create policy "Только авторизованные могут удалять новости"
+  on public.news for delete
   using (auth.role() = 'authenticated');
 
 
@@ -71,6 +78,10 @@ create policy "Только правление видит заявки"
 
 create policy "Только правление меняет заявки"
   on public.requests for update
+  using (auth.role() = 'authenticated');
+
+create policy "Только правление удаляет заявки"
+  on public.requests for delete
   using (auth.role() = 'authenticated');
 
 

@@ -2,7 +2,7 @@
 // ТСН «Строителей 5» — клиентская логика
 // ============================================
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
 
 const config = window.TSN_CONFIG || {};
 const isSupabaseConfigured =
@@ -62,7 +62,7 @@ async function loadNews() {
   try {
     const { data, error } = await supabase
       .from('news')
-      .select('*')
+      .select('id, title, category, excerpt, published_at')
       .order('published_at', { ascending: false })
       .limit(4);
 
@@ -114,6 +114,10 @@ if (form) {
     e.preventDefault();
 
     const formData = new FormData(form);
+
+    // Honeypot: если заполнено — это бот
+    if (formData.get('website')) return;
+
     const payload = {
       category: formData.get('category'),
       apartment: formData.get('apartment'),

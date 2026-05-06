@@ -15,14 +15,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
 <!-- Preload theme to avoid flicker -->
-<script>
-  (function() {
-    const saved = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = saved || (prefersDark ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', theme);
-  })();
-</script>
+<script src="/theme-init.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -349,6 +342,10 @@
       </div>
 
       <form class="request-form reveal" id="requestForm">
+        <!-- honeypot: боты заполняют, люди нет -->
+        <div class="form-honeypot" aria-hidden="true">
+          <input type="text" name="website" tabindex="-1" autocomplete="off">
+        </div>
         <div class="form-row">
           <label for="r-cat">Категория</label>
           <select id="r-cat" name="category" required>
@@ -360,19 +357,25 @@
         </div>
         <div class="form-row">
           <label for="r-flat">Номер квартиры</label>
-          <input id="r-flat" name="apartment" type="text" placeholder="Например, кв. 142" required>
+          <input id="r-flat" name="apartment" type="text" placeholder="Например, кв. 142"
+            required maxlength="10" pattern="^\d{1,4}[а-яёА-ЯЁa-zA-Z]?$"
+            title="Введите номер квартиры (до 4 цифр)">
         </div>
         <div class="form-row">
           <label for="r-name">Ваше имя</label>
-          <input id="r-name" name="name" type="text" placeholder="Иван Иванов" required>
+          <input id="r-name" name="name" type="text" placeholder="Иван Иванов"
+            required maxlength="100">
         </div>
         <div class="form-row">
           <label for="r-msg">Описание</label>
-          <textarea id="r-msg" name="description" placeholder="Опишите ситуацию подробно..." required></textarea>
+          <textarea id="r-msg" name="description" placeholder="Опишите ситуацию подробно..."
+            required maxlength="2000"></textarea>
         </div>
         <div class="form-row">
           <label for="r-phone">Телефон для связи</label>
-          <input id="r-phone" name="phone" type="tel" placeholder="+7 ___ ___ __ __" required>
+          <input id="r-phone" name="phone" type="tel" placeholder="+7 ___ ___ __ __"
+            required maxlength="20" pattern="^(\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$"
+            title="Введите номер в формате +7 (999) 123-45-67">
         </div>
         <button type="submit" class="btn btn-primary" id="submitBtn" style="width: 100%; justify-content: center;">
           Отправить заявку →
