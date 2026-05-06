@@ -47,12 +47,14 @@ const mlChangePwdStatus = document.getElementById('mlChangePwdStatus');
 // ============================================
 
 function openModal() {
-  modal.classList.add('is-open');
+  modal.removeAttribute('hidden');      // снимаем display:none от [hidden]
+  modal.classList.add('is-open');       // display:flex !important
   document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
   modal.classList.remove('is-open');
+  modal.setAttribute('hidden', '');    // возвращаем display:none
   document.body.style.overflow = '';
 }
 

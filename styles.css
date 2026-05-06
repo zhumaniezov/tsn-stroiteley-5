@@ -1134,8 +1134,13 @@ footer {
   align-items: center;
   justify-content: center;
   padding: 20px;
+  pointer-events: none;
 }
-.modal-overlay.is-open { display: flex; }
+/* hidden-атрибут снимается в JS; !important перебивает display:none от [hidden] */
+.modal-overlay.is-open {
+  display: flex !important;
+  pointer-events: auto;
+}
 
 .modal-backdrop {
   position: absolute;
