@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ТСН «Строителей 5» — г. Котельники, ул. Строителей, д.5</title>
+<meta name="description" content="Официальный сайт ТСН «Строителей 5». Новости, тарифы, заявки, документы и контакты для жильцов дома по адресу: г. Котельники, ул. Строителей, д. 5.">
+
+<!-- Open Graph для соцсетей -->
+<meta property="og:title" content="ТСН «Строителей 5»">
+<meta property="og:description" content="Официальный сайт товарищества собственников недвижимости">
+<meta property="og:type" content="website">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<!-- Preload theme to avoid flicker -->
+<script>
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<!-- SVG Logo -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo-buildings" viewBox="0 0 80 60">
+      <g fill="currentColor">
+        <rect x="2" y="14" width="3" height="40"/>
+        <rect x="7" y="14" width="3" height="40"/>
+        <rect x="12" y="6" width="3" height="48"/>
+        <rect x="17" y="6" width="3" height="48"/>
+        <rect x="22" y="14" width="3" height="40"/>
+        <rect x="27" y="14" width="3" height="40"/>
+        <rect x="2" y="52" width="28" height="3"/>
+        <rect x="42" y="14" width="3" height="40"/>
+        <rect x="47" y="14" width="3" height="40"/>
+        <rect x="52" y="6" width="3" height="48"/>
+        <rect x="57" y="6" width="3" height="48"/>
+        <rect x="62" y="14" width="3" height="40"/>
+        <rect x="67" y="14" width="3" height="40"/>
+        <rect x="42" y="52" width="28" height="3"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <svg class="logo-icon"><use href="#logo-buildings"/></svg>
+    <span class="logo-text">
+      Строителей <span class="red">5</span>
+      <small>ТСН · г. Котельники</small>
+    </span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#news">Новости</a></li>
+    <li><a href="#tariffs">Тарифы</a></li>
+    <li><a href="#requests">Заявки</a></li>
+    <li><a href="#docs">Документы</a></li>
+    <li><a href="#contacts">Контакты</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+    <svg class="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    <svg class="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+  <a href="#account" class="nav-cta">Личный кабинет</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div class="container hero-content">
+    <div class="hero-tag">
+      <span class="hero-tag-dot">✓</span>
+      Московская область, г. Котельники, ул. Строителей, д. 5
+    </div>
+
+    <h1 class="hero-title display">
+      Дом <span class="num-five">№5</span><br>
+      на улице<br>
+      <span class="accent">Строителей</span>
+    </h1>
+
+    <div class="hero-bottom">
+      <p class="hero-desc">
+        Товарищество собственников недвижимости управляет нашим домом сами: открыто, по-человечески, без посредников. Здесь — новости, оплата, заявки и документы.
+      </p>
+      <div class="hero-actions">
+        <a href="#account" class="btn btn-primary">
+          Войти в кабинет →
+        </a>
+        <a href="#requests" class="btn btn-ghost">
+          Подать заявку
+        </a>
+      </div>
+    </div>
+
+    <div class="heating-banner">
+      <div class="heating-icon">🌡</div>
+      <div class="heating-text">
+        <strong>Отопительный период 2025/2026 завершён</strong>
+        <p>Постановление Главы г.о. Котельники №353-ПП от 04.05.2026. Начисления за май — по фактическому количеству дней с отоплением.</p>
+      </div>
+      <a href="#docs" class="btn">Постановление →</a>
+    </div>
+  </div>
+</header>
+
+<!-- NEWS -->
+<section id="news">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-eyebrow">Новости и объявления</div>
+        <h2 class="section-title display">
+          Что происходит<br><span class="it">в нашем доме</span>
+        </h2>
+      </div>
+      <a href="#" class="btn btn-ghost">Все новости →</a>
+    </div>
+
+    <!-- Контейнер для динамических новостей из Supabase -->
+    <div class="news-grid" id="newsGrid">
+      <!-- Заглушки на случай если Supabase ещё не настроен -->
+      <article class="news-card featured reveal">
+        <div class="news-meta">
+          <span class="news-cat">Важно</span>
+          <span class="news-date">4 мая 2026</span>
+        </div>
+        <div class="news-arrow">↗</div>
+        <h3 class="news-title display">Завершён отопительный период 2025/2026 года</h3>
+        <p class="news-excerpt">Согласно постановлению №353-ПП Главы городского округа Котельники, отопление отключено с 4 мая. Начисления за май будут произведены по фактическому количеству дней с отоплением.</p>
+      </article>
+
+      <article class="news-card regular reveal">
+        <div class="news-meta">
+          <span class="news-cat">Сервис</span>
+          <span class="news-date">скоро</span>
+        </div>
+        <div class="news-arrow">↗</div>
+        <h3 class="news-title display">Гидравлические испытания тепловых сетей</h3>
+        <p class="news-excerpt">О сроках возможного отключения горячей воды сообщим дополнительно.</p>
+      </article>
+
+      <article class="news-card small reveal">
+        <div class="news-meta">
+          <span class="news-cat">Дом</span>
+          <span class="news-date">текущее</span>
+        </div>
+        <div class="news-arrow">↗</div>
+        <h3 class="news-title display">Передача показаний счётчиков — до 25 числа</h3>
+      </article>
+
+      <article class="news-card small reveal">
+        <div class="news-meta">
+          <span class="news-cat">Приём</span>
+          <span class="news-date">режим</span>
+        </div>
+        <div class="news-arrow">↗</div>
+        <h3 class="news-title display">Часы приёма населения — вторник и четверг</h3>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES / TARIFFS -->
+<section class="services" id="tariffs">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-eyebrow">Услуги и тарифы</div>
+        <h2 class="section-title display">
+          Прозрачные ставки<br><span class="it">без скрытых платежей</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="tariffs-grid">
+      <div class="tariff highlight reveal">
+        <div class="tariff-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <h3 class="tariff-name display">Содержание жилья</h3>
+        <p class="tariff-desc">Уборка, текущий ремонт, обслуживание общедомового имущества</p>
+        <div class="tariff-price">
+          <span class="num">—</span>
+          <span class="unit">₽ / м²</span>
+        </div>
+        <ul class="tariff-list">
+          <li>Уборка подъездов и территории</li>
+          <li>Текущий ремонт МОП</li>
+          <li>Обслуживание лифтов</li>
+          <li>Дезинсекция и дератизация</li>
+        </ul>
+      </div>
+
+      <div class="tariff reveal">
+        <div class="tariff-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <h3 class="tariff-name display">Управление</h3>
+        <p class="tariff-desc">Бухгалтерия, диспетчерская, аварийная служба</p>
+        <div class="tariff-price">
+          <span class="num">—</span>
+          <span class="unit">₽ / м²</span>
+        </div>
+        <ul class="tariff-list">
+          <li>Управление и бухгалтерия</li>
+          <li>Диспетчерская служба</li>
+          <li>Аварийная служба</li>
+          <li>Работа с обращениями</li>
+        </ul>
+      </div>
+
+      <div class="tariff reveal">
+        <div class="tariff-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6"/><path d="M12 22a8 8 0 0 0 8-8c0-3.5-2.5-6-8-12-5.5 6-8 8.5-8 12a8 8 0 0 0 8 8z"/></svg>
+        </div>
+        <h3 class="tariff-name display">Коммунальные</h3>
+        <p class="tariff-desc">Расчёт по показаниям счётчиков</p>
+        <div class="tariff-price">
+          <span class="num">по</span>
+          <span class="unit">факту потребления</span>
+        </div>
+        <ul class="tariff-list">
+          <li>Холодное и горячее водоснабжение</li>
+          <li>Водоотведение</li>
+          <li>Электроэнергия МОП</li>
+          <li>Отопление (по сезону)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="account-cta reveal" id="account">
+      <div class="account-content">
+        <h3 class="display">Личный кабинет жильца</h3>
+        <p>Платите за квартиру, передавайте показания и следите за начислениями. Всё в одном месте — на телефоне или ноутбуке.</p>
+        <a href="#" class="btn">Войти →</a>
+      </div>
+
+      <div class="account-mockup">
+        <div class="mockup-head">
+          <div class="mockup-user">
+            <div class="mockup-avatar">АК</div>
+            <div class="mockup-user-info">
+              <p>Анна К.</p>
+              <p>ул. Строителей, 5 · кв. 142</p>
+            </div>
+          </div>
+          <span style="font-size: 18px; color: var(--text-dim);">⚙</span>
+        </div>
+
+        <div class="mockup-balance">
+          <div class="mockup-balance-label">К оплате · апрель 2026</div>
+          <div class="mockup-balance-num">7 842<span class="ru"> ₽</span></div>
+          <div class="mockup-balance-status">оплачено вовремя</div>
+        </div>
+
+        <div class="mockup-row">
+          <p>Содержание и управление</p>
+          <p>4 230 ₽</p>
+        </div>
+        <div class="mockup-row">
+          <p>ХВС / ГВС / водоотведение</p>
+          <p>1 458 ₽</p>
+        </div>
+        <div class="mockup-row">
+          <p>Электроэнергия</p>
+          <p>2 154 ₽</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REQUESTS -->
+<section id="requests">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-eyebrow">Заявки и обращения</div>
+        <h2 class="section-title display">
+          Опишите проблему —<br><span class="it">мы решим</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="requests-wrap">
+      <div class="request-categories reveal">
+        <div class="req-cat urgent">
+          <div class="req-cat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="req-cat-text">
+            <p>Аварийная заявка</p>
+            <p>Протечки, отсутствие света, лифт</p>
+          </div>
+          <div class="req-cat-arrow">→</div>
+        </div>
+        <div class="req-cat">
+          <div class="req-cat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div class="req-cat-text">
+            <p>Плановая работа</p>
+            <p>Замена лампы, ремонт МОП, домофон</p>
+          </div>
+          <div class="req-cat-arrow">→</div>
+        </div>
+        <div class="req-cat">
+          <div class="req-cat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="req-cat-text">
+            <p>Обращение в правление</p>
+            <p>Предложения, жалобы, инициативы</p>
+          </div>
+          <div class="req-cat-arrow">→</div>
+        </div>
+        <div class="req-cat">
+          <div class="req-cat-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="req-cat-text">
+            <p>Запрос документов</p>
+            <p>Справки, выписки, копии</p>
+          </div>
+          <div class="req-cat-arrow">→</div>
+        </div>
+      </div>
+
+      <form class="request-form reveal" id="requestForm">
+        <div class="form-row">
+          <label for="r-cat">Категория</label>
+          <select id="r-cat" name="category" required>
+            <option value="planned">Плановая работа</option>
+            <option value="urgent">Аварийная заявка</option>
+            <option value="board">Обращение в правление</option>
+            <option value="docs">Запрос документов</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="r-flat">Номер квартиры</label>
+          <input id="r-flat" name="apartment" type="text" placeholder="Например, кв. 142" required>
+        </div>
+        <div class="form-row">
+          <label for="r-name">Ваше имя</label>
+          <input id="r-name" name="name" type="text" placeholder="Иван Иванов" required>
+        </div>
+        <div class="form-row">
+          <label for="r-msg">Описание</label>
+          <textarea id="r-msg" name="description" placeholder="Опишите ситуацию подробно..." required></textarea>
+        </div>
+        <div class="form-row">
+          <label for="r-phone">Телефон для связи</label>
+          <input id="r-phone" name="phone" type="tel" placeholder="+7 ___ ___ __ __" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="submitBtn" style="width: 100%; justify-content: center;">
+          Отправить заявку →
+        </button>
+        <div class="form-status" id="formStatus"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- DOCS -->
+<section id="docs">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-eyebrow">Документы</div>
+        <h2 class="section-title display">
+          Открытость —<br><span class="it">наш принцип</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="docs-grid" id="docsGrid">
+      <a href="#" class="doc-card reveal">
+        <div class="doc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h4>Постановление №353-ПП</h4>
+        <div class="doc-meta">PDF · о завершении отопления</div>
+      </a>
+      <a href="#" class="doc-card reveal">
+        <div class="doc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h4>Устав ТСН</h4>
+        <div class="doc-meta">PDF</div>
+      </a>
+      <a href="#" class="doc-card reveal">
+        <div class="doc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h4>Смета на 2026 год</h4>
+        <div class="doc-meta">PDF</div>
+      </a>
+      <a href="#" class="doc-card reveal">
+        <div class="doc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h4>Отчёт правления за 2025</h4>
+        <div class="doc-meta">PDF</div>
+      </a>
+      <a href="#" class="doc-card reveal">
+        <div class="doc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+        </div>
+        <h4>Протоколы общих собраний</h4>
+        <div class="doc-meta">Архив</div>
+      </a>
+      <a href="#" class="doc-card reveal">
+        <div class="doc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h4>Тарифы и расчёты</h4>
+        <div class="doc-meta">PDF</div>
+      </a>
+      <a href="#" class="doc-card reveal">
+        <div class="doc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h4>Договоры с РСО</h4>
+        <div class="doc-meta">PDF</div>
+      </a>
+      <a href="#" class="doc-card reveal">
+        <div class="doc-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h4>Правила проживания</h4>
+        <div class="doc-meta">PDF</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTS -->
+<section id="contacts">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-eyebrow">Контакты</div>
+        <h2 class="section-title display">
+          Звоните —<br><span class="it">мы на связи</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="contacts">
+      <div class="phones-panel reveal">
+        <h3 class="display">Телефоны для связи</h3>
+
+        <div class="phone-group">
+          <div class="phone-group-label">Диспетчерская служба</div>
+          <a href="tel:+74997557228" class="phone-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +7 (499) 755-72-28
+          </a>
+          <a href="tel:+79295387509" class="phone-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +7 (929) 538-75-09
+          </a>
+        </div>
+
+        <div class="phone-group">
+          <div class="phone-group-label">Лифтовая диспетчерская</div>
+          <a href="tel:+74955540288" class="phone-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 9l3-3 3 3"/><path d="M9 15l3 3 3-3"/></svg>
+            +7 (495) 554-02-88
+          </a>
+        </div>
+      </div>
+
+      <div class="address-card reveal">
+        <h3 class="display">Адрес и приём</h3>
+
+        <div class="info-block">
+          <div class="info-block-label">Адрес</div>
+          <div class="info-block-value">
+            Московская область,<br>
+            г. Котельники,<br>
+            ул. Строителей, д. 5
+          </div>
+        </div>
+
+        <div class="info-block">
+          <div class="info-block-label">Часы приёма населения</div>
+          <div class="reception-times">
+            <div class="reception-day">
+              <span>Вторник</span>
+              <span>10:00–13:00 · 15:00–18:00</span>
+            </div>
+            <div class="reception-day">
+              <span>Четверг</span>
+              <span>10:00–13:00 · 15:00–18:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <svg class="logo-icon" style="width:42px;height:42px"><use href="#logo-buildings"/></svg>
+          <span class="logo-text">
+            Строителей <span class="red">5</span>
+            <small>ТСН · г. Котельники</small>
+          </span>
+        </a>
+        <p>Товарищество собственников недвижимости. Управляем своим домом — открыто, эффективно, по-человечески.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Сайт</h5>
+        <ul>
+          <li><a href="#news">Новости</a></li>
+          <li><a href="#tariffs">Тарифы</a></li>
+          <li><a href="#docs">Документы</a></li>
+          <li><a href="#contacts">Контакты</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Жильцам</h5>
+        <ul>
+          <li><a href="#account">Личный кабинет</a></li>
+          <li><a href="#requests">Подать заявку</a></li>
+          <li><a href="#">Передать показания</a></li>
+          <li><a href="#">Оплатить онлайн</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Телефоны</h5>
+        <ul>
+          <li><a href="tel:+74997557228">+7 (499) 755-72-28</a></li>
+          <li><a href="tel:+79295387509">+7 (929) 538-75-09</a></li>
+          <li><a href="tel:+74955540288">Лифт: 554-02-88</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© ТСН «Строителей 5», г. Котельники, ул. Строителей, д. 5</span>
+      <span>Сделано с заботой о доме</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/config.js"></script>
+<script type="module" src="/app.js"></script>
+</body>
+</html>
