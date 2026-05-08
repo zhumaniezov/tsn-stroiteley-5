@@ -81,7 +81,29 @@
     <svg class="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     <svg class="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
   </button>
-  <button class="nav-cta" data-account-modal>Личный кабинет</button>
+  <button class="nav-cta" id="navLoginBtn" data-account-modal>Личный кабинет</button>
+
+  <!-- Залогиненным: показывается вместо "Личный кабинет" -->
+  <div class="nav-user" id="navUser" hidden>
+    <button class="nav-user-btn" id="navUserBtn" aria-expanded="false" aria-haspopup="true">
+      <div class="nav-avatar" id="navAvatar">АК</div>
+      <div class="nav-user-info">
+        <span class="nav-user-name" id="navUserName">Имя</span>
+        <span class="nav-user-apt" id="navUserApt">кв. 0</span>
+      </div>
+      <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="nav-dropdown" id="navDropdown" hidden>
+      <a href="/account" class="nav-dropdown-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Личный кабинет
+      </a>
+      <button class="nav-dropdown-item nav-dropdown-logout" id="navLogoutBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Выйти
+      </button>
+    </div>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -566,7 +588,7 @@
         <ul>
           <li><a href="/account" data-account-modal>Личный кабинет</a></li>
           <li><a href="#requests">Подать заявку</a></li>
-          <li><a href="#">Передать показания</a></li>
+          <li><a href="/account" data-account-modal>Передать показания</a></li>
           <li><a href="#">Оплатить онлайн</a></li>
         </ul>
       </div>
@@ -644,53 +666,6 @@
       </form>
     </div>
 
-    <!-- ДАШБОРД -->
-    <div id="mlDash" hidden>
-      <!-- Профиль -->
-      <div class="modal-dash-header">
-        <div class="modal-dash-user">
-          <div class="dash-avatar" id="mlAvatar">АК</div>
-          <div>
-            <div class="dash-name display" id="mlName">Загрузка…</div>
-            <div class="dash-apt" id="mlApt"></div>
-          </div>
-        </div>
-        <button class="btn btn-ghost modal-logout-btn" id="mlLogoutBtn">Выйти</button>
-      </div>
-
-      <div class="board-badge" id="mlBoardBadge" hidden>
-        Режим правления — видны все заявки дома
-      </div>
-
-      <!-- Смена пароля -->
-      <div class="modal-dash-section-head">
-        <h3 class="display modal-dash-section-title">Мои заявки</h3>
-        <button class="modal-text-link" id="mlChangePwdToggle">Сменить пароль</button>
-      </div>
-
-      <div id="mlChangePwdBox" hidden>
-        <form id="mlChangePwdForm" class="modal-change-pwd" novalidate>
-          <div class="form-row">
-            <label for="ml-cp">Новый пароль</label>
-            <input id="ml-cp" name="password" type="password" required minlength="8" placeholder="Минимум 8 символов">
-          </div>
-          <div class="form-row">
-            <label for="ml-cp2">Повторите</label>
-            <input id="ml-cp2" name="password2" type="password" required minlength="8">
-          </div>
-          <div class="modal-pwd-actions">
-            <button type="submit" class="btn btn-primary" id="mlChangePwdBtn">Сохранить →</button>
-            <button type="button" class="btn btn-ghost" id="mlChangePwdCancel">Отмена</button>
-          </div>
-          <div class="form-status" id="mlChangePwdStatus"></div>
-        </form>
-      </div>
-
-      <!-- Список заявок -->
-      <div id="mlRequestsList" class="requests-list">
-        <div class="requests-loading">Загрузка…</div>
-      </div>
-    </div>
   </div>
 </div>
 

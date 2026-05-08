@@ -1,12 +1,11 @@
 // ============================================
-// ТСН «Строителей 5» — модал личного кабинета
+// ТСН «Строителей 5» — модал входа + nav update
 // ============================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
 
 const config = window.TSN_CONFIG || {};
 
-// Если Supabase не настроен — модал открываем, но без данных
 const isConfigured = !!(config.SUPABASE_URL && config.SUPABASE_ANON_KEY
   && !config.SUPABASE_URL.includes('YOUR_'));
 
@@ -15,16 +14,109 @@ const supabase = isConfigured
   : null;
 
 // ============================================
-// ЭЛЕМЕНТЫ
+// УТИЛИТЫ
+// ============================================
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = String(str);
+  return div.innerHTML;
+}
+
+function setStatus(el, type, msg) {
+  el.className = type ? `form-status ${type}` : 'form-status';
+  el.textContent = msg;
+}
+
+// ============================================
+// НАВИГАЦИЯ: обновление состояния входа
+// ============================================
+
+async function updateNav(user) {
+  const navLoginBtn = document.getElementById('navLoginBtn');
+  const navUser     = document.getElementById('navUser');
+  const navAvatar   = document.getElementById('navAvatar');
+  const navUserName = document.getElementById('navUserName');
+  const navUserApt  = document.getElementById('navUserApt');
+
+  if (!navLoginBtn || !navUser) return;
+
+  if (!user) {
+    navLoginBtn.hidden = false;
+    navUser.hidden = true;
+    document.documentElement.classList.remove('is-logged-in');
+    return;
+  }
+
+  navLoginBtn.hidden = true;
+  navUser.hidden = false;
+  document.documentElement.classList.add('is-logged-in');
+
+  if (!supabase) return;
+
+  const { data: resident } = await supabase
+    .from('residents')
+    .select('name, apartment')
+    .eq('user_id', user.id)
+    .single();
+
+  if (resident) {
+    const initials = resident.name
+      .split(' ').slice(0, 2)
+      .map(w => w[0] || '').join('').toUpperCase();
+    if (navAvatar)   navAvatar.textContent   = initials || '?';
+    if (navUserName) navUserName.textContent = resident.name;
+    if (navUserApt)  navUserApt.textContent  = `кв. ${resident.apartment}`;
+  } else {
+    if (navAvatar)   navAvatar.textContent   = '?';
+    if (navUserName) navUserName.textContent = user.email || '';
+    if (navUserApt)  navUserApt.textContent  = '';
+  }
+}
+
+// ============================================
+// NAV DROPDOWN (для залогиненных)
+// ============================================
+
+const navUserBtn  = document.getElementById('navUserBtn');
+const navDropdown = document.getElementById('navDropdown');
+
+if (navUserBtn && navDropdown) {
+  navUserBtn.addEventListener('click', () => {
+    const isOpen = navDropdown.hidden === false;
+    navDropdown.hidden = isOpen;
+    navUserBtn.setAttribute('aria-expanded', String(!isOpen));
+  });
+
+  // Закрывать дропдаун при клике вне
+  document.addEventListener('click', e => {
+    if (navUserBtn && navDropdown && !navUserBtn.contains(e.target) && !navDropdown.contains(e.target)) {
+      navDropdown.hidden = true;
+      navUserBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
+// Кнопка выхода в nav
+const navLogoutBtn = document.getElementById('navLogoutBtn');
+if (navLogoutBtn) {
+  navLogoutBtn.addEventListener('click', async () => {
+    if (supabase) await supabase.auth.signOut();
+    window.location.href = '/';
+  });
+}
+
+// ============================================
+// ЭЛЕМЕНТЫ МОДАЛА
 // ============================================
 
 const modal      = document.getElementById('accountModal');
-const modalInner = modal.querySelector('.modal-inner');
+const modalInner = modal ? modal.querySelector('.modal-inner') : null;
 const closeBtn   = document.getElementById('modalClose');
 
 const mlLogin    = document.getElementById('mlLogin');
 const mlRecovery = document.getElementById('mlRecovery');
-const mlDash     = document.getElementById('mlDash');
 
 const mlLoginForm   = document.getElementById('mlLoginForm');
 const mlLoginBtn    = document.getElementById('mlLoginBtn');
@@ -40,20 +132,12 @@ const mlRecoveryForm   = document.getElementById('mlRecoveryForm');
 const mlRecoveryBtn    = document.getElementById('mlRecoveryBtn');
 const mlRecoveryStatus = document.getElementById('mlRecoveryStatus');
 
-const mlLogoutBtn       = document.getElementById('mlLogoutBtn');
-const mlBoardBadge      = document.getElementById('mlBoardBadge');
-const mlChangePwdToggle = document.getElementById('mlChangePwdToggle');
-const mlChangePwdBox    = document.getElementById('mlChangePwdBox');
-const mlChangePwdForm   = document.getElementById('mlChangePwdForm');
-const mlChangePwdBtn    = document.getElementById('mlChangePwdBtn');
-const mlChangePwdCancel = document.getElementById('mlChangePwdCancel');
-const mlChangePwdStatus = document.getElementById('mlChangePwdStatus');
-
 // ============================================
 // ОТКРЫТИЕ / ЗАКРЫТИЕ — не зависит от CSS-кэша
 // ============================================
 
 function openModal() {
+  if (!modal) return;
   modal.removeAttribute('hidden');
   modal.classList.add('is-open');
   // Inline-стили как гарантия: работают даже при устаревшем кэше CSS
@@ -67,23 +151,41 @@ function openModal() {
 }
 
 function closeModal() {
+  if (!modal) return;
   modal.classList.remove('is-open');
   modal.style.display = 'none';
   modal.setAttribute('hidden', '');
   document.body.style.overflow = '';
 }
 
-// Клик вне modal-inner закрывает модал
-modal.addEventListener('click', e => {
-  if (!modalInner.contains(e.target)) closeModal();
-});
+function showState(active) {
+  [mlLogin, mlRecovery].forEach(s => {
+    if (s) s.hidden = s !== active;
+  });
+}
 
-closeBtn.addEventListener('click', closeModal);
+if (modal && modalInner) {
+  modal.addEventListener('click', e => {
+    if (!modalInner.contains(e.target)) closeModal();
+  });
+}
+
+if (closeBtn) closeBtn.addEventListener('click', closeModal);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// Кнопки с data-account-modal открывают модал
+// Кнопки с data-account-modal:
+// если залогинен → редирект на /account, иначе открыть модал
 document.querySelectorAll('[data-account-modal]').forEach(el => {
-  el.addEventListener('click', e => { e.preventDefault(); openModal(); });
+  el.addEventListener('click', async e => {
+    e.preventDefault();
+    if (!supabase) { openModal(); return; }
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      window.location.href = '/account';
+    } else {
+      openModal();
+    }
+  });
 });
 
 // ============================================
@@ -97,15 +199,11 @@ if (supabase) {
       showState(mlRecovery);
       return;
     }
-    if (session) {
-      showDash(session.user);
-    } else {
-      showState(mlLogin);
-    }
+    updateNav(session ? session.user : null);
   });
 
   supabase.auth.getSession().then(({ data: { session } }) => {
-    if (session) showDash(session.user);
+    updateNav(session ? session.user : null);
   });
 }
 
@@ -113,234 +211,89 @@ if (supabase) {
 // ВХОД
 // ============================================
 
-mlLoginForm.addEventListener('submit', async e => {
-  e.preventDefault();
-  if (!supabase) { setStatus(mlLoginStatus, 'error', 'Supabase не настроен в config.js'); return; }
+if (mlLoginForm) {
+  mlLoginForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!supabase) { setStatus(mlLoginStatus, 'error', 'Supabase не настроен в config.js'); return; }
 
-  setStatus(mlLoginStatus, '', '');
-  mlLoginBtn.disabled = true;
-  mlLoginBtn.textContent = 'Входим…';
+    setStatus(mlLoginStatus, '', '');
+    mlLoginBtn.disabled = true;
+    mlLoginBtn.textContent = 'Входим…';
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email:    mlLoginForm.email.value.trim(),
-    password: mlLoginForm.password.value,
+    const { error } = await supabase.auth.signInWithPassword({
+      email:    mlLoginForm.email.value.trim(),
+      password: mlLoginForm.password.value,
+    });
+
+    if (error) {
+      setStatus(mlLoginStatus, 'error', 'Неверный email или пароль');
+      mlLoginBtn.disabled = false;
+      mlLoginBtn.textContent = 'Войти →';
+    } else {
+      // Успешный вход — редирект на /account
+      window.location.href = '/account';
+    }
   });
-
-  if (error) {
-    setStatus(mlLoginStatus, 'error', 'Неверный email или пароль');
-    mlLoginBtn.disabled = false;
-    mlLoginBtn.textContent = 'Войти →';
-  }
-});
+}
 
 // ============================================
 // СБРОС ПАРОЛЯ
 // ============================================
 
-mlResetToggle.addEventListener('click', () => {
-  mlResetBox.hidden = !mlResetBox.hidden;
-  mlResetToggle.textContent = mlResetBox.hidden ? 'Забыли пароль?' : 'Скрыть';
-});
+if (mlResetToggle) {
+  mlResetToggle.addEventListener('click', () => {
+    mlResetBox.hidden = !mlResetBox.hidden;
+    mlResetToggle.textContent = mlResetBox.hidden ? 'Забыли пароль?' : 'Скрыть';
+  });
+}
 
-mlResetForm.addEventListener('submit', async e => {
-  e.preventDefault();
-  if (!supabase) return;
-  mlResetBtn.disabled = true;
-  mlResetBtn.textContent = 'Отправляем…';
-  setStatus(mlResetStatus, '', '');
+if (mlResetForm) {
+  mlResetForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!supabase) return;
+    mlResetBtn.disabled = true;
+    mlResetBtn.textContent = 'Отправляем…';
+    setStatus(mlResetStatus, '', '');
 
-  const { error } = await supabase.auth.resetPasswordForEmail(
-    mlResetForm.email.value.trim(),
-    { redirectTo: location.origin }
-  );
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      mlResetForm.email.value.trim(),
+      { redirectTo: `${location.origin}/account` }
+    );
 
-  setStatus(mlResetStatus,
-    error ? 'error' : 'success',
-    error ? 'Не удалось отправить. Проверьте email.' : '✓ Письмо отправлено. Проверьте почту.'
-  );
-  mlResetBtn.disabled = false;
-  mlResetBtn.textContent = 'Отправить письмо →';
-});
+    setStatus(mlResetStatus,
+      error ? 'error' : 'success',
+      error ? 'Не удалось отправить. Проверьте email.' : '✓ Письмо отправлено. Проверьте почту.'
+    );
+    mlResetBtn.disabled = false;
+    mlResetBtn.textContent = 'Отправить письмо →';
+  });
+}
 
 // ============================================
 // НОВЫЙ ПАРОЛЬ (по ссылке из письма)
 // ============================================
 
-mlRecoveryForm.addEventListener('submit', async e => {
-  e.preventDefault();
-  if (!supabase) return;
-  const pwd  = mlRecoveryForm.password.value;
-  const pwd2 = mlRecoveryForm.password2.value;
-  if (pwd !== pwd2) { setStatus(mlRecoveryStatus, 'error', 'Пароли не совпадают'); return; }
+if (mlRecoveryForm) {
+  mlRecoveryForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!supabase) return;
+    const pwd  = mlRecoveryForm.password.value;
+    const pwd2 = mlRecoveryForm.password2.value;
+    if (pwd !== pwd2) { setStatus(mlRecoveryStatus, 'error', 'Пароли не совпадают'); return; }
 
-  mlRecoveryBtn.disabled = true;
-  mlRecoveryBtn.textContent = 'Сохраняем…';
-  setStatus(mlRecoveryStatus, '', '');
+    mlRecoveryBtn.disabled = true;
+    mlRecoveryBtn.textContent = 'Сохраняем…';
+    setStatus(mlRecoveryStatus, '', '');
 
-  const { error } = await supabase.auth.updateUser({ password: pwd });
+    const { error } = await supabase.auth.updateUser({ password: pwd });
 
-  if (error) {
-    setStatus(mlRecoveryStatus, 'error', 'Не удалось сохранить. Попробуйте ещё раз.');
-    mlRecoveryBtn.disabled = false;
-    mlRecoveryBtn.textContent = 'Сохранить пароль →';
-  } else {
-    setStatus(mlRecoveryStatus, 'success', '✓ Пароль изменён. Открываем кабинет…');
-  }
-});
-
-// ============================================
-// ВЫХОД
-// ============================================
-
-mlLogoutBtn.addEventListener('click', async () => {
-  if (supabase) await supabase.auth.signOut();
-  closeModal();
-});
-
-// ============================================
-// СМЕНА ПАРОЛЯ ИЗ ДАШБОРДА
-// ============================================
-
-mlChangePwdToggle.addEventListener('click', () => {
-  mlChangePwdBox.hidden = !mlChangePwdBox.hidden;
-  mlChangePwdToggle.textContent = mlChangePwdBox.hidden ? 'Сменить пароль' : 'Скрыть';
-});
-
-mlChangePwdCancel.addEventListener('click', () => {
-  mlChangePwdBox.hidden = true;
-  mlChangePwdToggle.textContent = 'Сменить пароль';
-  mlChangePwdForm.reset();
-  setStatus(mlChangePwdStatus, '', '');
-});
-
-mlChangePwdForm.addEventListener('submit', async e => {
-  e.preventDefault();
-  if (!supabase) return;
-  const pwd  = mlChangePwdForm.password.value;
-  const pwd2 = mlChangePwdForm.password2.value;
-  if (pwd !== pwd2) { setStatus(mlChangePwdStatus, 'error', 'Пароли не совпадают'); return; }
-
-  mlChangePwdBtn.disabled = true;
-  mlChangePwdBtn.textContent = 'Сохраняем…';
-  setStatus(mlChangePwdStatus, '', '');
-
-  const { error } = await supabase.auth.updateUser({ password: pwd });
-  setStatus(mlChangePwdStatus,
-    error ? 'error' : 'success',
-    error ? 'Не удалось сохранить.' : '✓ Пароль успешно изменён'
-  );
-  mlChangePwdBtn.disabled = false;
-  mlChangePwdBtn.textContent = 'Сохранить →';
-  if (!error) mlChangePwdForm.reset();
-});
-
-// ============================================
-// ДАШБОРД
-// ============================================
-
-async function showDash(user) {
-  showState(mlDash);
-  if (!supabase) return;
-
-  const { data: resident } = await supabase
-    .from('residents')
-    .select('name, apartment, is_board')
-    .eq('user_id', user.id)
-    .single();
-
-  if (resident) {
-    const initials = resident.name
-      .split(' ').slice(0, 2)
-      .map(w => w[0] || '').join('').toUpperCase();
-
-    document.getElementById('mlAvatar').textContent = initials || '?';
-    document.getElementById('mlName').textContent   = resident.name;
-    document.getElementById('mlApt').textContent    =
-      `ул. Строителей, 5 · кв. ${resident.apartment}`;
-    mlBoardBadge.hidden = !resident.is_board;
-    loadRequests(resident.apartment, resident.is_board);
-  } else {
-    document.getElementById('mlName').textContent = user.email;
-    document.getElementById('mlApt').textContent  =
-      'Профиль не найден — обратитесь в правление';
-    loadRequests(null, false);
-  }
-}
-
-// ============================================
-// ЗАЯВКИ
-// ============================================
-
-const STATUS_LABELS = {
-  new:         'Новая',
-  in_progress: 'В работе',
-  done:        'Выполнена',
-  closed:      'Закрыта',
-};
-
-const CAT_LABELS = {
-  planned: 'Плановая',
-  urgent:  'Аварийная',
-  board:   'В правление',
-  docs:    'Документы',
-};
-
-async function loadRequests(apartment, isBoard) {
-  if (!supabase) return;
-  const list = document.getElementById('mlRequestsList');
-
-  let query = supabase
-    .from('requests')
-    .select('id, category, apartment, description, status, created_at')
-    .order('created_at', { ascending: false })
-    .limit(20);
-
-  if (!isBoard && apartment) query = query.eq('apartment', apartment);
-
-  const { data, error } = await query;
-
-  if (error) {
-    list.innerHTML = '<p class="requests-empty">Не удалось загрузить заявки</p>';
-    return;
-  }
-  if (!data?.length) {
-    list.innerHTML = '<p class="requests-empty">Заявок пока нет</p>';
-    return;
-  }
-
-  list.innerHTML = data.map(r => `
-    <div class="request-item">
-      <div class="request-item-head">
-        <span class="req-status-badge status-${escapeHtml(r.status)}">
-          ${STATUS_LABELS[r.status] || escapeHtml(r.status)}
-        </span>
-        <span class="request-item-cat">${CAT_LABELS[r.category] || escapeHtml(r.category)}</span>
-        ${isBoard ? `<span class="request-item-apt">кв. ${escapeHtml(r.apartment)}</span>` : ''}
-        <span class="request-item-date">
-          ${new Date(r.created_at).toLocaleDateString('ru-RU', {day:'numeric', month:'short'})}
-        </span>
-      </div>
-      <p class="request-item-desc">${escapeHtml(r.description)}</p>
-    </div>
-  `).join('');
-}
-
-// ============================================
-// УТИЛИТЫ
-// ============================================
-
-function showState(active) {
-  [mlLogin, mlRecovery, mlDash].forEach(s => { s.hidden = s !== active; });
-}
-
-function setStatus(el, type, msg) {
-  el.className = type ? `form-status ${type}` : 'form-status';
-  el.textContent = msg;
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = String(str);
-  return div.innerHTML;
+    if (error) {
+      setStatus(mlRecoveryStatus, 'error', 'Не удалось сохранить. Попробуйте ещё раз.');
+      mlRecoveryBtn.disabled = false;
+      mlRecoveryBtn.textContent = 'Сохранить пароль →';
+    } else {
+      setStatus(mlRecoveryStatus, 'success', '✓ Пароль изменён. Переходим в кабинет…');
+      setTimeout(() => { window.location.href = '/account'; }, 1200);
+    }
+  });
 }

@@ -6,16 +6,18 @@
 <title>Личный кабинет — ТСН «Строителей 5»</title>
 <meta name="description" content="Личный кабинет жильца ТСН «Строителей 5» · г. Котельники, ул. Строителей, д. 5">
 
-<script src="/theme-init.js"></script>
+<!-- Preload theme to avoid flicker -->
+<script src="/theme-init.js?v=3"></script>
+
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles.css?v=3">
 </head>
 <body>
 
-<!-- SVG Logo (дублируется из index.html т.к. нет шаблонизатора) -->
+<!-- SVG Logo -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <symbol id="logo-buildings" viewBox="0 0 80 60">
@@ -59,143 +61,187 @@
     <svg class="theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     <svg class="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
   </button>
+  <button class="nav-cta" id="navLoginBtn" hidden>Личный кабинет</button>
+
+  <!-- Залогиненным: показывается вместо "Личный кабинет" -->
+  <div class="nav-user" id="navUser" hidden>
+    <button class="nav-user-btn" id="navUserBtn" aria-expanded="false" aria-haspopup="true">
+      <div class="nav-avatar" id="navAvatar">АК</div>
+      <div class="nav-user-info">
+        <span class="nav-user-name" id="navUserName">Имя</span>
+        <span class="nav-user-apt" id="navUserApt">кв. 0</span>
+      </div>
+      <svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="nav-dropdown" id="navDropdown" hidden>
+      <a href="/account" class="nav-dropdown-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Личный кабинет
+      </a>
+      <button class="nav-dropdown-item nav-dropdown-logout" id="navLogoutBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Выйти
+      </button>
+    </div>
+  </div>
 </nav>
 
-<!-- ======= ЭКРАН 1: ВХОД ======= -->
-<div id="loginSection" class="acct-section">
+<!-- ======= ЛИЧНЫЙ КАБИНЕТ ======= -->
+<main class="account-page" id="accountPage" hidden>
   <div class="container">
-    <div class="login-wrap">
-      <div class="login-card">
-        <div class="login-icon">
-          <svg width="44" height="33" viewBox="0 0 80 60"><use href="#logo-buildings"/></svg>
-        </div>
-        <h1 class="display login-title">Личный кабинет</h1>
-        <p class="login-sub">Войдите с email и паролем, которые выдало правление</p>
 
-        <form id="loginForm" novalidate>
-          <div class="form-row">
-            <label for="l-email">Email</label>
-            <input id="l-email" name="email" type="email"
-              placeholder="ivan@example.com" required autocomplete="email">
+    <!-- Профиль -->
+    <div class="acct-profile">
+      <div class="acct-avatar-lg" id="acctAvatar">АК</div>
+      <div class="acct-profile-text">
+        <div class="acct-profile-name" id="acctName">Загрузка…</div>
+        <div class="acct-profile-meta" id="acctMeta">ул. Строителей, 5</div>
+      </div>
+      <button class="btn" id="acctLogoutBtn">Выйти</button>
+    </div>
+
+    <!-- Плашка правления -->
+    <div class="board-badge" id="acctBoardBadge" hidden>
+      Режим правления — видны все заявки дома
+    </div>
+
+    <!-- Основная сетка -->
+    <div class="acct-grid">
+
+      <!-- ЛЕВАЯ КОЛОНКА: Заявки -->
+      <div class="acct-main">
+        <div class="acct-card">
+          <div class="acct-card-head">
+            <h2 class="acct-card-title">Мои заявки</h2>
+            <button class="btn btn-primary" id="acctNewReqBtn">+ Подать заявку</button>
           </div>
-          <div class="form-row">
-            <label for="l-pass">Пароль</label>
-            <input id="l-pass" name="password" type="password"
-              required autocomplete="current-password" minlength="6">
-          </div>
-          <button type="submit" class="btn btn-primary login-btn" id="loginBtn">
-            Войти →
-          </button>
-          <div class="form-status" id="loginStatus"></div>
-        </form>
 
-        <button class="reset-toggle" id="resetToggle">Забыли пароль?</button>
-
-        <div id="resetSection" hidden>
-          <p class="reset-hint">Введите email — пришлём ссылку для смены пароля</p>
-          <form id="resetForm" novalidate>
-            <div class="form-row">
-              <label for="re-email">Email</label>
-              <input id="re-email" name="email" type="email"
-                placeholder="ivan@example.com" required>
+          <!-- Форма новой заявки (скрыта изначально) -->
+          <div id="acctRequestForm" hidden>
+            <div class="acct-request-form">
+              <form id="newRequestForm" novalidate>
+                <div class="form-row">
+                  <label for="nrCat">Категория</label>
+                  <select id="nrCat" name="category" required>
+                    <option value="planned">Плановая работа</option>
+                    <option value="urgent">Аварийная заявка</option>
+                    <option value="board">Обращение в правление</option>
+                    <option value="docs">Запрос документов</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label for="nrDesc">Описание</label>
+                  <textarea id="nrDesc" name="description" placeholder="Опишите ситуацию подробно…" required maxlength="2000"></textarea>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                  <button type="submit" class="btn btn-primary" id="nrSubmitBtn">Отправить →</button>
+                  <button type="button" class="btn btn-ghost" id="nrCancelBtn">Отмена</button>
+                </div>
+                <div class="form-status" id="nrStatus"></div>
+              </form>
             </div>
-            <button type="submit" class="btn btn-ghost" id="resetBtn">
-              Отправить письмо →
+          </div>
+
+          <!-- Фильтры -->
+          <div class="acct-filters" id="myReqFilters">
+            <button class="acct-filter active" data-filter="all">Все</button>
+            <button class="acct-filter" data-filter="new">Новые</button>
+            <button class="acct-filter" data-filter="in_progress">В работе</button>
+            <button class="acct-filter" data-filter="done">Выполнены</button>
+            <button class="acct-filter" data-filter="closed">Закрыты</button>
+          </div>
+
+          <!-- Список заявок -->
+          <div id="myRequestsList" class="requests-list">
+            <div class="requests-loading">Загрузка…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ПРАВАЯ КОЛОНКА: Счётчики + Контакты -->
+      <div class="acct-sidebar">
+
+        <!-- Показания счётчиков -->
+        <div class="acct-card">
+          <h2 class="acct-card-title">Показания счётчиков</h2>
+          <p class="acct-readings-hint">Передавайте до 25-го числа каждого месяца</p>
+          <form id="meterForm" novalidate>
+            <div class="form-row">
+              <label for="mCold">Холодная вода (м³)</label>
+              <input id="mCold" name="cold_water" type="number" min="0" step="0.001" placeholder="0.000">
+            </div>
+            <div class="form-row">
+              <label for="mHot">Горячая вода (м³)</label>
+              <input id="mHot" name="hot_water" type="number" min="0" step="0.001" placeholder="0.000">
+            </div>
+            <div class="form-row">
+              <label for="mElec">Электроэнергия (кВт·ч)</label>
+              <input id="mElec" name="electricity" type="number" min="0" step="0.001" placeholder="0.000">
+            </div>
+            <button type="submit" class="btn btn-primary" id="meterSubmitBtn" style="width:100%;justify-content:center;">
+              Передать показания →
             </button>
-            <div class="form-status" id="resetStatus"></div>
+            <div class="form-status" id="meterStatus"></div>
           </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- ======= ЭКРАН 2: СМЕНА ПАРОЛЯ (после перехода по ссылке из письма) ======= -->
-<div id="recoverySection" class="acct-section" hidden>
-  <div class="container">
-    <div class="login-wrap">
-      <div class="login-card">
-        <h1 class="display login-title">Новый пароль</h1>
-        <p class="login-sub">Придумайте новый пароль для входа</p>
-        <form id="recoveryForm" novalidate>
-          <div class="form-row">
-            <label for="np-pass">Новый пароль</label>
-            <input id="np-pass" name="password" type="password"
-              required minlength="8" placeholder="Минимум 8 символов">
+          <!-- Последние показания -->
+          <div id="lastReadings" hidden>
+            <div class="last-readings">
+              <div class="last-readings-title">Последние переданные показания</div>
+              <div id="lastReadingsRows"></div>
+            </div>
           </div>
-          <div class="form-row">
-            <label for="np-pass2">Повторите пароль</label>
-            <input id="np-pass2" name="password2" type="password"
-              required minlength="8" placeholder="Повторите пароль">
-          </div>
-          <button type="submit" class="btn btn-primary login-btn" id="recoveryBtn">
-            Сохранить пароль →
-          </button>
-          <div class="form-status" id="recoveryStatus"></div>
-        </form>
+        </div>
+
+        <!-- Контакты -->
+        <div class="acct-card">
+          <h2 class="acct-card-title">Контакты</h2>
+          <a href="tel:+74997557228" class="acct-contact">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <div>
+              <div class="acct-contact-label">Диспетчерская</div>
+              <div class="acct-contact-phone">+7 (499) 755-72-28</div>
+            </div>
+          </a>
+          <a href="tel:+79295387509" class="acct-contact">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <div>
+              <div class="acct-contact-label">Дежурный</div>
+              <div class="acct-contact-phone">+7 (929) 538-75-09</div>
+            </div>
+          </a>
+          <a href="tel:+74955540288" class="acct-contact">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 9l3-3 3 3"/><path d="M9 15l3 3 3-3"/></svg>
+            <div>
+              <div class="acct-contact-label">Лифтовая</div>
+              <div class="acct-contact-phone">+7 (495) 554-02-88</div>
+            </div>
+          </a>
+        </div>
+
       </div>
-    </div>
-  </div>
-</div>
+    </div><!-- /acct-grid -->
 
-<!-- ======= ЭКРАН 3: ДАШБОРД ======= -->
-<div id="dashSection" class="acct-section" hidden>
-  <div class="container">
-
-    <!-- Шапка профиля -->
-    <div class="dash-header">
-      <div class="dash-user">
-        <div class="dash-avatar" id="dashAvatar">АК</div>
-        <div>
-          <div class="dash-name display" id="dashName">Загрузка…</div>
-          <div class="dash-apt" id="dashApt">ул. Строителей, 5</div>
+    <!-- Секция правления: все заявки дома -->
+    <div class="acct-board" id="boardSection" hidden>
+      <div class="acct-card">
+        <h2 class="acct-card-title">Все заявки дома</h2>
+        <div class="acct-filters" id="boardReqFilters">
+          <button class="acct-filter active" data-filter="all">Все</button>
+          <button class="acct-filter" data-filter="new">Новые</button>
+          <button class="acct-filter" data-filter="in_progress">В работе</button>
+          <button class="acct-filter" data-filter="done">Выполнены</button>
+        </div>
+        <div id="boardRequestsList" class="requests-list">
+          <div class="requests-loading">Загрузка…</div>
         </div>
       </div>
-      <div class="dash-actions">
-        <button class="btn btn-ghost dash-pwd-btn" id="changePwdBtn">Сменить пароль</button>
-        <button class="btn" id="logoutBtn">Выйти</button>
-      </div>
     </div>
-
-    <!-- Плашка для правления -->
-    <div class="board-badge" id="boardBadge" hidden>
-      Режим правления — показаны все заявки дома
-    </div>
-
-    <!-- Смена пароля (встроенная форма) -->
-    <div class="dash-card change-pwd-card" id="changePwdCard" hidden>
-      <h2 class="dash-card-title display">Смена пароля</h2>
-      <form id="changePwdForm" novalidate>
-        <div class="form-row">
-          <label for="cp-new">Новый пароль</label>
-          <input id="cp-new" name="password" type="password"
-            required minlength="8" placeholder="Минимум 8 символов">
-        </div>
-        <div class="form-row">
-          <label for="cp-new2">Повторите</label>
-          <input id="cp-new2" name="password2" type="password"
-            required minlength="8" placeholder="Повторите пароль">
-        </div>
-        <div class="dash-form-actions">
-          <button type="submit" class="btn btn-primary" id="changePwdSubmit">Сохранить →</button>
-          <button type="button" class="btn btn-ghost" id="changePwdCancel">Отмена</button>
-        </div>
-        <div class="form-status" id="changePwdStatus"></div>
-      </form>
-    </div>
-
-    <!-- Список заявок -->
-    <section class="dash-card">
-      <h2 class="dash-card-title display">Мои заявки</h2>
-      <div id="requestsList" class="requests-list">
-        <div class="requests-loading">Загрузка…</div>
-      </div>
-    </section>
 
   </div>
-</div>
+</main>
 
-<script src="/config.js"></script>
-<script type="module" src="/account.js"></script>
+<script src="/config.js?v=3"></script>
+<script type="module" src="/account.js?v=3"></script>
 </body>
 </html>

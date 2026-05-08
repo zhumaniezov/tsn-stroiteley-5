@@ -171,6 +171,34 @@ create policy "Правление видит все заявки"
 
 
 -- ============================================
+-- ТАБЛИЦА: ПОКАЗАНИЯ СЧЁТЧИКОВ
+-- ============================================
+create table if not exists public.meter_readings (
+  id bigserial primary key,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  apartment text not null,
+  cold_water numeric(10,3),
+  hot_water numeric(10,3),
+  electricity numeric(10,3),
+  submitted_at timestamptz not null default now()
+);
+
+alter table public.meter_readings enable row level security;
+
+create policy "Жилец вставляет свои показания"
+  on public.meter_readings for insert
+  with check (auth.uid() = user_id);
+
+create policy "Жилец видит свои показания"
+  on public.meter_readings for select
+  using (auth.uid() = user_id);
+
+create policy "Правление видит все показания"
+  on public.meter_readings for select
+  using (public.is_board_member());
+
+
+-- ============================================
 -- ПРИМЕРНЫЕ ДАННЫЕ ДЛЯ НАЧАЛА
 -- ============================================
 insert into public.news (title, category, excerpt, published_at) values
