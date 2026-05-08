@@ -138,6 +138,7 @@ const mlRecoveryStatus = document.getElementById('mlRecoveryStatus');
 
 function openModal() {
   if (!modal) return;
+  showState(mlLogin);
   modal.removeAttribute('hidden');
   modal.classList.add('is-open');
   // Inline-стили как гарантия: работают даже при устаревшем кэше CSS
