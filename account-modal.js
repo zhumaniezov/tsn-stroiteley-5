@@ -5,15 +5,22 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
 
 const config = window.TSN_CONFIG || {};
-const supabase = createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
+
+// Если Supabase не настроен — модал открываем, но без данных
+const isConfigured = !!(config.SUPABASE_URL && config.SUPABASE_ANON_KEY
+  && !config.SUPABASE_URL.includes('YOUR_'));
+
+const supabase = isConfigured
+  ? createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY)
+  : null;
 
 // ============================================
 // ЭЛЕМЕНТЫ
 // ============================================
 
-const modal    = document.getElementById('accountModal');
-const backdrop = document.getElementById('modalBackdrop');
-const closeBtn = document.getElementById('modalClose');
+const modal      = document.getElementById('accountModal');
+const modalInner = modal.querySelector('.modal-inner');
+const closeBtn   = document.getElementById('modalClose');
 
 const mlLogin    = document.getElementById('mlLogin');
 const mlRecovery = document.getElementById('mlRecovery');
@@ -43,52 +50,64 @@ const mlChangePwdCancel = document.getElementById('mlChangePwdCancel');
 const mlChangePwdStatus = document.getElementById('mlChangePwdStatus');
 
 // ============================================
-// ОТКРЫТИЕ / ЗАКРЫТИЕ
+// ОТКРЫТИЕ / ЗАКРЫТИЕ — не зависит от CSS-кэша
 // ============================================
 
 function openModal() {
-  modal.removeAttribute('hidden');      // снимаем display:none от [hidden]
-  modal.classList.add('is-open');       // display:flex !important
+  modal.removeAttribute('hidden');
+  modal.classList.add('is-open');
+  // Inline-стили как гарантия: работают даже при устаревшем кэше CSS
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.background = 'rgba(0,0,0,0.58)';
+  modal.style.backdropFilter = 'blur(8px)';
+  modal.style.webkitBackdropFilter = 'blur(8px)';
   document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
   modal.classList.remove('is-open');
-  modal.setAttribute('hidden', '');    // возвращаем display:none
+  modal.style.display = 'none';
+  modal.setAttribute('hidden', '');
   document.body.style.overflow = '';
 }
 
-// Все кнопки/ссылки с data-account-modal открывают модал
+// Клик вне modal-inner закрывает модал
+modal.addEventListener('click', e => {
+  if (!modalInner.contains(e.target)) closeModal();
+});
+
+closeBtn.addEventListener('click', closeModal);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// Кнопки с data-account-modal открывают модал
 document.querySelectorAll('[data-account-modal]').forEach(el => {
   el.addEventListener('click', e => { e.preventDefault(); openModal(); });
 });
 
-closeBtn.addEventListener('click', closeModal);
-backdrop.addEventListener('click', closeModal);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
 // ============================================
-// AUTH: РЕАКЦИЯ НА СОСТОЯНИЕ
+// AUTH — только если Supabase настроен
 // ============================================
 
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === 'PASSWORD_RECOVERY') {
-    openModal();
-    showState(mlRecovery);
-    return;
-  }
-  if (session) {
-    showDash(session.user);
-    // Открываем только если модал уже открыт или сессия появилась при старте
-  } else {
-    showState(mlLogin);
-  }
-});
+if (supabase) {
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      openModal();
+      showState(mlRecovery);
+      return;
+    }
+    if (session) {
+      showDash(session.user);
+    } else {
+      showState(mlLogin);
+    }
+  });
 
-// При загрузке страницы — если уже залогинен, показать дашборд при открытии
-supabase.auth.getSession().then(({ data: { session } }) => {
-  if (session) showDash(session.user);
-});
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session) showDash(session.user);
+  });
+}
 
 // ============================================
 // ВХОД
@@ -96,6 +115,8 @@ supabase.auth.getSession().then(({ data: { session } }) => {
 
 mlLoginForm.addEventListener('submit', async e => {
   e.preventDefault();
+  if (!supabase) { setStatus(mlLoginStatus, 'error', 'Supabase не настроен в config.js'); return; }
+
   setStatus(mlLoginStatus, '', '');
   mlLoginBtn.disabled = true;
   mlLoginBtn.textContent = 'Входим…';
@@ -110,7 +131,6 @@ mlLoginForm.addEventListener('submit', async e => {
     mlLoginBtn.disabled = false;
     mlLoginBtn.textContent = 'Войти →';
   }
-  // При успехе onAuthStateChange → showDash
 });
 
 // ============================================
@@ -124,13 +144,14 @@ mlResetToggle.addEventListener('click', () => {
 
 mlResetForm.addEventListener('submit', async e => {
   e.preventDefault();
+  if (!supabase) return;
   mlResetBtn.disabled = true;
   mlResetBtn.textContent = 'Отправляем…';
   setStatus(mlResetStatus, '', '');
 
   const { error } = await supabase.auth.resetPasswordForEmail(
     mlResetForm.email.value.trim(),
-    { redirectTo: location.origin }   // возвращает на главную, модал обработает
+    { redirectTo: location.origin }
   );
 
   setStatus(mlResetStatus,
@@ -142,11 +163,12 @@ mlResetForm.addEventListener('submit', async e => {
 });
 
 // ============================================
-// ФОРМА НОВОГО ПАРОЛЯ (по ссылке из письма)
+// НОВЫЙ ПАРОЛЬ (по ссылке из письма)
 // ============================================
 
 mlRecoveryForm.addEventListener('submit', async e => {
   e.preventDefault();
+  if (!supabase) return;
   const pwd  = mlRecoveryForm.password.value;
   const pwd2 = mlRecoveryForm.password2.value;
   if (pwd !== pwd2) { setStatus(mlRecoveryStatus, 'error', 'Пароли не совпадают'); return; }
@@ -163,7 +185,6 @@ mlRecoveryForm.addEventListener('submit', async e => {
     mlRecoveryBtn.textContent = 'Сохранить пароль →';
   } else {
     setStatus(mlRecoveryStatus, 'success', '✓ Пароль изменён. Открываем кабинет…');
-    // onAuthStateChange переключит на дашборд
   }
 });
 
@@ -172,7 +193,7 @@ mlRecoveryForm.addEventListener('submit', async e => {
 // ============================================
 
 mlLogoutBtn.addEventListener('click', async () => {
-  await supabase.auth.signOut();
+  if (supabase) await supabase.auth.signOut();
   closeModal();
 });
 
@@ -194,6 +215,7 @@ mlChangePwdCancel.addEventListener('click', () => {
 
 mlChangePwdForm.addEventListener('submit', async e => {
   e.preventDefault();
+  if (!supabase) return;
   const pwd  = mlChangePwdForm.password.value;
   const pwd2 = mlChangePwdForm.password2.value;
   if (pwd !== pwd2) { setStatus(mlChangePwdStatus, 'error', 'Пароли не совпадают'); return; }
@@ -203,7 +225,6 @@ mlChangePwdForm.addEventListener('submit', async e => {
   setStatus(mlChangePwdStatus, '', '');
 
   const { error } = await supabase.auth.updateUser({ password: pwd });
-
   setStatus(mlChangePwdStatus,
     error ? 'error' : 'success',
     error ? 'Не удалось сохранить.' : '✓ Пароль успешно изменён'
@@ -219,6 +240,7 @@ mlChangePwdForm.addEventListener('submit', async e => {
 
 async function showDash(user) {
   showState(mlDash);
+  if (!supabase) return;
 
   const { data: resident } = await supabase
     .from('residents')
@@ -233,12 +255,14 @@ async function showDash(user) {
 
     document.getElementById('mlAvatar').textContent = initials || '?';
     document.getElementById('mlName').textContent   = resident.name;
-    document.getElementById('mlApt').textContent    = `ул. Строителей, 5 · кв. ${resident.apartment}`;
+    document.getElementById('mlApt').textContent    =
+      `ул. Строителей, 5 · кв. ${resident.apartment}`;
     mlBoardBadge.hidden = !resident.is_board;
     loadRequests(resident.apartment, resident.is_board);
   } else {
     document.getElementById('mlName').textContent = user.email;
-    document.getElementById('mlApt').textContent  = 'Профиль не найден — обратитесь в правление';
+    document.getElementById('mlApt').textContent  =
+      'Профиль не найден — обратитесь в правление';
     loadRequests(null, false);
   }
 }
@@ -262,6 +286,7 @@ const CAT_LABELS = {
 };
 
 async function loadRequests(apartment, isBoard) {
+  if (!supabase) return;
   const list = document.getElementById('mlRequestsList');
 
   let query = supabase
@@ -292,7 +317,7 @@ async function loadRequests(apartment, isBoard) {
         <span class="request-item-cat">${CAT_LABELS[r.category] || escapeHtml(r.category)}</span>
         ${isBoard ? `<span class="request-item-apt">кв. ${escapeHtml(r.apartment)}</span>` : ''}
         <span class="request-item-date">
-          ${new Date(r.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}
+          ${new Date(r.created_at).toLocaleDateString('ru-RU', {day:'numeric', month:'short'})}
         </span>
       </div>
       <p class="request-item-desc">${escapeHtml(r.description)}</p>
